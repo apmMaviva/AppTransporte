@@ -57,12 +57,9 @@
 							if (button==2) {
 								navigator.app.exitApp();
 							}
-							if (button==3) {
-								history.back(-1);	
-							}							
 						},
 						"SALIR",
-						["NO","SI", "ANTERIOR"]
+						["NO","SI"]
 					);
 			}
 
@@ -75,7 +72,7 @@
 				estado = 'N';	
 				
 				var url = "http://192.168.200.236/transporte/applogin?serial=" + numSerie;
-				var contenido = '<iframe frameborder="0" style="width:98%!important;height:98%!important;margin:1%!important;padding:0!important;overflow:hidden;" src="' + url + '">No funciona si se ve esto</iframe>';
+				var contenido = '<iframe frameborder="0" style="width:99%!important;height:99%!important;margin:0.5%!important;padding:0!important;overflow:hidden;" src="' + url + '">No funciona si se ve esto</iframe>';
 				
 				$('#zonaFrame').html(contenido);
 				
@@ -91,6 +88,8 @@
 			function onError(error) {
 				alert('code: '    + error.code    + '\n' +
 					  'message: ' + error.message + '\n');
+				comunicarPosicion(error.code,error.message,0,0,0);
+				
 				setTimeout(GetPosicion, 300000);	  
 			}
 
@@ -105,9 +104,30 @@
 					  'Heading: '           + position.coords.heading           + '\n' +
 					  'Speed: '             + position.coords.speed             + '\n' +
 					  'Timestamp: '         + position.timestamp                + '\n');
+				comunicarPosicion('OK','',position.coords.latitude,position.coords.longitude,position.coords.accuracy);
+				
 				setTimeout(GetPosicion, 30000);	  
 			};			
-					
-		
+				
+			
+			function comunicarPosicion(res, error, lat, lon, precision) {
+			
+				archivoValidacion = "http://192.168.200.236/transporte/posicion.php?jsoncallback=?"
+				
+				$.getJSON( archivoValidacion, { serie: numSerie, res: res, error: error, lat: lat, lon: lon, prec: precision})
+				
+					.done(function(respuestaServer) {
+						
+						if(respuestaServer.validacion != "ok"){
+				  /// ejecutar una conducta cuando la validacion falla
+							alert("Error llamada" + respuestaServer.mensaje);
+						}	
+					})
+						
+					.fail(function() {
+						alert("ERROR LLAMADA");
+					})			
+			}
+			
 	</script>
 </html>
