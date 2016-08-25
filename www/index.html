@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2014 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+--> 
+<html>
+    <head>
+        <meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+		<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/index.css" />
+        <script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/jquery.cookie.js"></script>		
+        <title>Maviva App Pistolas</title>
+		
+    </head>
+    <body>
+		
+		<div id="imagenNFC">
+			<img src="img/nfc.jpg">
+		</div>	
+		
+		<div id="zonaFrame" style="width:100%;height:100%;padding:0%;margin:0%;">
+		</div>
+		
+		<div id="varsession" style="display:none;">
+		</div>
+		
+    </body>
+	
+	<script type="text/javascript">
+			
+			var numSerie;  // ID del terminal
+			var estado; // Estado de la aplicacion: N-normal, B-Leyendo barcode, F- Leyendo NFC
+			var desactivarNFC = false; 
+			
+			document.addEventListener("deviceready", InitSerial, false);
+	
+			document.addEventListener("backbutton", onBackKeyDown, false);
+	
+			
+/* Si pulsa boton atrás se pregunta si quiere cerrar la APP */			
+			function onBackKeyDown() {
+			
+				if (estado == 'N') {
+					navigator.notification.confirm( "¿Deseas cerrar la aplicación?", 
+						function (button) {
+							if (button==2) {
+								navigator.app.exitApp();
+							}
+							if (button==3) {
+								history.back(-1);	
+							}							
+						},
+						"SALIR",
+						["NO","SI", "ANTERIOR"]
+					);
+				}
+
+				if (estado == 'F') {
+					estado = 'N';
+				
+					$("#imagenNFC").hide();
+					$("#zonaFrame").css('display','block');
+				
+					setTimeout(validarLectura, 6000);					
+				}		
+			}
+
+		
+/* Se inicia la aplicación, necesito darle un numero de serie unico para mandar las lecturas de BARCODES a la BBDD con este ID */			
+			function InitSerial() {
+
+				numSerie = device.uuid;	
+				
+				estado = 'N';	
+//				alert("Mi ID es " + numSerie);
+				
+				var url = "http://192.168.201.138/pistolas/login.aspx?serial=" + numSerie;
+				var contenido = '<iframe frameborder="0" style="width:98%!important;height:98%!important;margin:1%!important;padding:0!important;overflow:hidden;" src="' + url + '">No funciona si se ve esto</iframe>';
+				
+				$('#zonaFrame').html(contenido);
+				$("#imagenNFC").hide();
+				
+				setTimeout(validarLectura, 10000);
+			}
+            
+			
+			function validarLectura() {
+
+				if (estado == 'N') {
+					var form = $('#zonaFrame iframe').contents().find('form').html();
+					if (form.indexOf('leer-barcode-android') > -1)   {
+						LeerBarcode();
+					}
+					else if (form.indexOf('leer-nfc-android') > -1)   {
+						if (desactivarNFC==false) {
+							LeerNFC();
+						}	
+					}				
+					else {
+						setTimeout(validarLectura, 2000);
+					}	
+				}
+				
+			}
+			
+/* ESCANEO BARCODE, activa el lector y  */			
+			function LeerBarcode() {
+				
+				estado = 'B';
+				
+				var scanner = cordova.require("cordova/plugin/BarcodeScanner");
+//				alert("Scan: paso " + pasoSincrono + " y " + procesaCarro);
+				
+				scanner.scan( function (result) { 
+
+								if (result.cancelled) {
+									estado = 'N';
+									
+//									alert("Lectura CANCELADA");
+									var url = 'http://192.168.201.138/pistolas/guardabarcode.aspx?serial=' + numSerie + '&barcode=CANCELADA';
+									var contenido = '<iframe frameborder="0" style="width:0%;height:0%;" src="' + url + '">No funciona si se ve esto</iframe>';
+									$("#varsession").html(contenido);
+//									alert("Lectura COMPLETADA");
+									setTimeout(validarLectura, 6000);
+								}
+								else {
+									estado = 'N';
+									
+//									alert("Lectura OK, " + result.text);
+									var url = 'http://192.168.201.138/pistolas/guardabarcode.aspx?serial=' + numSerie + '&barcode=' + result.text;
+									var contenido = '<iframe frameborder="0" style="width:0%;height:0%;" src="' + url + '">No funciona si se ve esto</iframe>';
+									$("#varsession").html(contenido);
+//									alert("Lectura COMPLETADA");
+									setTimeout(validarLectura, 6000);
+								} 
+
+								/*
+								alert("We got a barcode\n" + 
+								"Result: " + result.text + "\n" + 
+								"Format: " + result.format + "\n" + 
+								"Cancelled: " + result.cancelled);  
+
+								if (args.format == "QR_CODE") {
+									window.plugins.childBrowser.showWebPage(args.text, { showLocationBar: false });
+								}
+								*/
+
+							}, function (error) { 
+								estado = 'N';
+								
+//								alert("Se ha producido un error de lectura"); 
+								var url = 'http://192.168.201.138/pistolas/guardabarcode.aspx?serial=' + numSerie + '&barcode=ERROR';
+								var contenido = '<iframe frameborder="0" style="width:0%;height:0%;" src="' + url + '">No funciona si se ve esto</iframe>';
+								$("#varsession").html(contenido);
+//								alert("Lectura COMPLETADA");	
+								setTimeout(validarLectura, 6000);		
+							} );	
+
+			}
+
+// Activación del lector NFC
+			function LeerNFC() {
+				
+				nfc.addNdefListener(LecturaNfc, activadoNfcOk, activadoNfcFail);
+
+			}
+
+			function LecturaNfc(nfcEvent) {
+
+				var tag = nfcEvent.tag,
+					ndefMessage = tag.ndefMessage;
+	
+				var contenido = nfc.bytesToString(ndefMessage[0].payload).substring(1);
+				
+				if (contenido.substr(0,2)=='es' || contenido.substr(0,2)=='ES' || contenido.substr(0,2)=='en' || contenido.substr(0,2)=='EN') {
+					contenido = contenido.substr(2);
+				} 
+
+				estado = 'N';
+								
+				$("#imagenNFC").hide();
+				$("#zonaFrame").css('display','block');
+				
+				var url = 'http://192.168.201.138/pistolas/guardabarcode.aspx?serial=' + numSerie + '&barcode=' + contenido;
+				var contenido = '<iframe frameborder="0" style="width:0%;height:0%;" src="' + url + '">No funciona si se ve esto</iframe>';
+				$("#varsession").html(contenido);
+				setTimeout(validarLectura, 6000);
+									
+			}
+			
+			function activadoNfcOk() {
+				
+				estado = 'F';
+				
+				$("#imagenNFC").show();
+				$("#zonaFrame").css('display','none');
+// Esto es para esconder el teclado, ya que el foco está en un input del iframe				
+				document.activeElement.blur();
+			}
+			
+			function activadoNfcFail() {
+				
+				estado = 'N';
+
+				$("#imagenNFC").hide();
+				$("#zonaFrame").css('display','block');
+				
+				navigator.notification.confirm( "LECTOR NFC DESACTIVADO O INOPERATIVO", 
+						function (button) {
+							if (button==2) {
+								desactivarNFC=true;
+								navigator.notification.alert("FUNCIONANDO SIN NFC.");
+							}
+						},
+						"ERROR NFC",
+						["REINTENTAR","LECTURA MANUAL"]
+					);
+				var url = 'http://192.168.201.138/pistolas/guardabarcode.aspx?serial=' + numSerie + '&barcode=ERROR';
+				var contenido = '<iframe frameborder="0" style="width:0%;height:0%;" src="' + url + '">No funciona si se ve esto</iframe>';
+				$("#varsession").html(contenido);
+				setTimeout(validarLectura, 6000);		
+			}
+						
+		
+	</script>
+</html>
