@@ -71,7 +71,7 @@
 				
 				estado = 'N';	
 				
-				var url = "http://192.168.200.236/transporte/applogin?serial=" + numSerie;
+				var url = "https://transportes.grupomaviva.es/applogin?serial=" + numSerie;
 				var contenido = '<iframe frameborder="0" style="width:99%!important;height:99%!important;margin:0.5%!important;padding:0!important;overflow:hidden;" src="' + url + '">No funciona si se ve esto</iframe>';
 				
 				$('#zonaFrame').html(contenido);
@@ -112,7 +112,7 @@
 			
 			function comunicarPosicion(res, error, lat, lon, precision) {
 			
-				archivoValidacion = "http://192.168.200.236/transporte/posicion.php?jsoncallback=?"
+				archivoValidacion = "https://transportes.grupomaviva.es/posicion.php?jsoncallback=?"
 				
 				$.getJSON( archivoValidacion, { serie: numSerie, res: res, error: error, lat: lat, lon: lon, prec: precision})
 				
