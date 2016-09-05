@@ -82,10 +82,16 @@
 			
 			function GetPosicion() {
 // Busco si en el html pone	que hay que leer posicion GPS
+				alert("Salta GetPosicion");
 				var form = $('#zonaFrame iframe').contents().find('p.leerposicion').html();
 				if (form.indexOf('true') > -1)   {
+					alert("Encuentra");
 					navigator.geolocation.getCurrentPosition(onSuccess, onError);
-				}				
+				}
+				else {
+					alert("No Encuentra");
+					setTimeout(GetPosicion, 60000);	
+				}
 			}
 
     // onError Callback receives a PositionError object
