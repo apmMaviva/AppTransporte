@@ -77,6 +77,8 @@
 				$('#zonaFrame').html(contenido);
 				
 				setTimeout(GetPosicion, 10000);
+				
+				setTimeout(LecturaBarcode, 6000);
 			}
             
 			
@@ -134,6 +136,72 @@
 					.fail(function() {
 						alert("ERROR LLAMADA");
 					})			
+			}
+
+
+			function LecturaBarcode() {
+
+				var form = $('#zonaFrame iframe').contents().find('p.leerbarcode').html();
+				if (form.indexOf('true') > -1)   {
+					LeerBarcode();
+				}
+				else {
+					setTimeout(validarLectura, 3000);
+				}	
+				
+			}
+			
+/* ESCANEO BARCODE, activa el lector y  */			
+			function LeerBarcode() {
+				
+				var scanner = cordova.require("cordova/plugin/BarcodeScanner");
+//				alert("Scan: paso " + pasoSincrono + " y " + procesaCarro);
+				
+				scanner.scan( function (result) { 
+
+								if (result.cancelled) {
+									estado = 'N';
+									
+//									alert("Lectura CANCELADA");
+									var url = 'http://192.168.201.138/pistolas/guardabarcode.aspx?serial=' + numSerie + '&barcode=CANCELADA';
+									var contenido = '<iframe frameborder="0" style="width:0%;height:0%;" src="' + url + '">No funciona si se ve esto</iframe>';
+									$("#varsession").html(contenido);
+//									alert("Lectura COMPLETADA");
+									setTimeout(validarLectura, 6000);
+								}
+								else {
+									estado = 'N';
+									
+//									alert("Lectura OK, " + result.text);
+									var url = 'http://192.168.201.138/pistolas/guardabarcode.aspx?serial=' + numSerie + '&barcode=' + result.text;
+									var contenido = '<iframe frameborder="0" style="width:0%;height:0%;" src="' + url + '">No funciona si se ve esto</iframe>';
+									$("#varsession").html(contenido);
+//									alert("Lectura COMPLETADA");
+									setTimeout(validarLectura, 6000);
+								} 
+
+								/*
+								alert("We got a barcode\n" + 
+								"Result: " + result.text + "\n" + 
+								"Format: " + result.format + "\n" + 
+								"Cancelled: " + result.cancelled);  
+
+								if (args.format == "QR_CODE") {
+									window.plugins.childBrowser.showWebPage(args.text, { showLocationBar: false });
+								}
+								*/
+
+							}, function (error) { 
+								estado = 'N';
+								
+//								alert("Se ha producido un error de lectura"); 
+								var url = 'http://192.168.201.138/pistolas/guardabarcode.aspx?serial=' + numSerie + '&barcode=ERROR';
+								var contenido = '<iframe frameborder="0" style="width:0%;height:0%;" src="' + url + '">No funciona si se ve esto</iframe>';
+								$("#varsession").html(contenido);
+//								alert("Lectura COMPLETADA");	
+								setTimeout(validarLectura, 6000);		
+							} );	
+
 			}
 			
 	</script>
