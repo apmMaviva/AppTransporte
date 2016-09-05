@@ -81,7 +81,11 @@
             
 			
 			function GetPosicion() {
-				navigator.geolocation.getCurrentPosition(onSuccess, onError);
+// Busco si en el html pone	que hay que leer posicion GPS
+				var form = $('#zonaFrame iframe').contents().find('p.leerposicion').html();
+				if (form.indexOf('true') > -1)   {
+					navigator.geolocation.getCurrentPosition(onSuccess, onError);
+				}				
 			}
 
     // onError Callback receives a PositionError object
@@ -106,7 +110,7 @@
 					  'Timestamp: '         + position.timestamp                + '\n');*/
 				comunicarPosicion('OK','',position.coords.latitude,position.coords.longitude,position.coords.accuracy);
 				
-				setTimeout(GetPosicion, 120000);	  
+				setTimeout(GetPosicion, 60000);	  
 			};			
 				
 			
