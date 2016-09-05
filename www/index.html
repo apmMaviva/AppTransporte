@@ -140,9 +140,11 @@
 
 
 			function LecturaBarcode() {
-
+				
+				alert("Lee barcode");
 				var form = $('#zonaFrame iframe').contents().find('p.leerbarcode').html();
 				if (form.indexOf('true') > -1)   {
+					alert("Encuentra");
 					LeerBarcode();
 				}
 				else {
