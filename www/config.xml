@@ -1,7 +1,7 @@
 <widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="com.maviva.rutas" version="1.0.0">
-	<name>Maviva</name>
-	<description>Hojas ruta Maviva</description>
-	<author href="http://www.grupomaviva.es" email="informatica@grupomaviva.es">App Hojas Ruta</author>
+	<name>Hojas de Ruta Maviva</name>
+	<description>Gestión de Hojas ruta Maviva</description>
+	<author href="http://www.grupomaviva.es" email="informatica@grupomaviva.es">App Control Hojas de Ruta</author>
 	<content src="index.html"/>
 	
 	<allow-navigation href="*" />
