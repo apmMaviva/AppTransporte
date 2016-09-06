@@ -144,7 +144,11 @@
 				alert("Lee barcode");
 				var form = $('#zonaFrame iframe').contents().find('p.leerbarcode').html();
 				alert("Leo form " + form);
-				if (form.indexOf('true') > -1)   {
+				if (typeof(form) === 'undefined') {
+					alert("Undefined");
+					setTimeout(LecturaBarcode, 3000);				
+				}
+				else if (form.indexOf('true') > -1)   {
 					alert("Encuentra");
 					LeerBarcode();
 				}
