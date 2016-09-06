@@ -51,7 +51,18 @@
 			
 /* Si pulsa boton atrás se pregunta si quiere cerrar la APP */			
 			function onBackKeyDown() {
-			
+
+				var form = $('#zonaFrame iframe').contents().find('p.evitarcierre').html();
+
+				if (typeof(form) === 'undefined') {
+					MensajeCierreApp();				
+				}
+				else if (form.indexOf('true') <= -1)   {
+					MensajeCierreApp();
+				}
+			}
+
+			function MensajeCierreApp() {			
 				navigator.notification.confirm( "¿Deseas cerrar la aplicación?", 
 						function (button) {
 							if (button==2) {
@@ -141,19 +152,16 @@
 
 			function LecturaBarcode() {
 				
-				alert("Lee barcode");
+
 				var form = $('#zonaFrame iframe').contents().find('p.leerbarcode').html();
-				alert("Leo form " + form);
+
 				if (typeof(form) === 'undefined') {
-					alert("Undefined");
 					setTimeout(LecturaBarcode, 3000);				
 				}
 				else if (form.indexOf('true') > -1)   {
-					alert("Encuentra");
 					LeerBarcode();
 				}
 				else {
-					alert("No Encuentra");
 					setTimeout(LecturaBarcode, 3000);
 				}	
 				
@@ -179,7 +187,7 @@
 									
 									$('#zonaFrame').html(contenido);
 
-									setTimeout(LecturaBarcode, 4000);
+									setTimeout(LecturaBarcode, 6000);
 								}
 								else {
 //									alert("Lectura OK, " + result.text);
@@ -191,7 +199,7 @@
 									var url = "https://transportes.grupomaviva.es/appviaje?serial=" + numSerie + '&barcode=' + result.text;
 									var contenido = '<iframe frameborder="0" style="width:99%!important;height:99%!important;margin:0.5%!important;padding:0!important;overflow:hidden;" src="' + url + '">No funciona si se ve esto</iframe>';
 
-									setTimeout(LecturaBarcode, 4000);
+									setTimeout(LecturaBarcode, 6000);
 								} 
 
 								/*
