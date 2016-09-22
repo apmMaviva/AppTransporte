@@ -97,9 +97,11 @@
 // Busco si en el html pone	que hay que leer posicion GPS
 				var form = $('#zonaFrame iframe').contents().find('p.leerposicion').html();
 				if (form.indexOf('true') > -1)   {
+					alert("Toca leer");
 					navigator.geolocation.getCurrentPosition(onSuccess, onError);
 				}
 				else {
+					alert("Timeout 1 minuto");
 					setTimeout(GetPosicion, 60000);	
 				}
 			}
