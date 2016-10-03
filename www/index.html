@@ -44,6 +44,7 @@
 	<script type="text/javascript">
 			
 			var numSerie;  // ID del terminal
+			var flashOperativo;   // Indicamos si funciona el flash o no
 			
 			document.addEventListener("deviceready", InitSerial, false);
 	
@@ -95,16 +96,10 @@
 				
 				window.plugins.flashlight.available(function(isAvailable) {
 					if (isAvailable) {
-						// switch on
-						window.plugins.flashlight.switchOn(); // success/error callbacks may be passed
-
-						// switch off after 3 seconds
-						setTimeout(function() {
-						  window.plugins.flashlight.switchOff(); // success/error callbacks may be passed
-						}, 3000);
+						flashOperativo = true;
 					}	
 					else {
-						alert("Flashlight not available on this device");
+						flashOperativo = false;
 					}
 				});
 			}
@@ -185,6 +180,8 @@
 /* ESCANEO BARCODE, activa el lector y  */			
 			function LeerBarcode() {
 				
+				window.plugins.flashlight.switchOn();   // Activar el flash
+				
 				var scanner = cordova.require("cordova/plugin/BarcodeScanner");
 //				alert("Scan: paso " + pasoSincrono + " y " + procesaCarro);
 				
@@ -197,6 +194,7 @@
 									$("#varsession").html(contenido);
 //									alert("Lectura COMPLETADA");*/
 
+									window.plugins.flashlight.switchOff();   // Desactivar el flash
 									var url = "https://transportes.grupomaviva.es/appviaje?serial=" + numSerie + '&barcode=CANCELADA';
 									var contenido = '<iframe frameborder="0" style="width:99%!important;height:99%!important;margin:0.5%!important;padding:0!important;overflow:hidden;" src="' + url + '">No funciona si se ve esto</iframe>';
 									
@@ -211,6 +209,7 @@
 									$("#varsession").html(contenido);
 //									alert("Lectura COMPLETADA");*/
 
+									window.plugins.flashlight.switchOff();   // Desactivar el flash
 									var url = "https://transportes.grupomaviva.es/appviaje?serial=" + numSerie + '&barcode=' + result.text;
 									var contenido = '<iframe frameborder="0" style="width:99%!important;height:99%!important;margin:0.5%!important;padding:0!important;overflow:hidden;" src="' + url + '">No funciona si se ve esto</iframe>';
 									
@@ -231,7 +230,8 @@
 								*/
 
 							}, function (error) { 
-									
+							
+								window.plugins.flashlight.switchOff();   // Desactivar el flash									
 								var url = "https://transportes.grupomaviva.es/appviaje?serial=" + numSerie + '&barcode=ERROR';
 								var contenido = '<iframe frameborder="0" style="width:99%!important;height:99%!important;margin:0.5%!important;padding:0!important;overflow:hidden;" src="' + url + '">No funciona si se ve esto</iframe>';
 								
