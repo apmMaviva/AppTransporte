@@ -90,6 +90,16 @@
 				setTimeout(GetPosicion, 10000);
 				
 				setTimeout(LecturaBarcode, 6000);
+				
+				
+				window.plugins.flashlight.available(function(isAvailable) {
+					if (isAvailable) {
+						alert("Flashlight available!");	
+					}	
+					else {
+						alert("Flashlight not available on this device");
+					}
+				});
 			}
             
 			
