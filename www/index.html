@@ -180,7 +180,9 @@
 /* ESCANEO BARCODE, activa el lector y  */			
 			function LeerBarcode() {
 				
-				window.plugins.flashlight.switchOn();   // Activar el flash
+				if (flashOperativo) {
+					window.plugins.flashlight.switchOn();   // Activar el flash
+				}
 				
 				var scanner = cordova.require("cordova/plugin/BarcodeScanner");
 //				alert("Scan: paso " + pasoSincrono + " y " + procesaCarro);
@@ -194,7 +196,10 @@
 									$("#varsession").html(contenido);
 //									alert("Lectura COMPLETADA");*/
 
-									window.plugins.flashlight.switchOff();   // Desactivar el flash
+									if (flashOperativo) {
+										window.plugins.flashlight.switchOff();   // Desactivar el flash
+									}
+									
 									var url = "https://transportes.grupomaviva.es/appviaje?serial=" + numSerie + '&barcode=CANCELADA';
 									var contenido = '<iframe frameborder="0" style="width:99%!important;height:99%!important;margin:0.5%!important;padding:0!important;overflow:hidden;" src="' + url + '">No funciona si se ve esto</iframe>';
 									
@@ -209,7 +214,9 @@
 									$("#varsession").html(contenido);
 //									alert("Lectura COMPLETADA");*/
 
-									window.plugins.flashlight.switchOff();   // Desactivar el flash
+									if (flashOperativo) {
+										window.plugins.flashlight.switchOff();   // Desactivar el flash
+									}	
 									var url = "https://transportes.grupomaviva.es/appviaje?serial=" + numSerie + '&barcode=' + result.text;
 									var contenido = '<iframe frameborder="0" style="width:99%!important;height:99%!important;margin:0.5%!important;padding:0!important;overflow:hidden;" src="' + url + '">No funciona si se ve esto</iframe>';
 									
@@ -230,8 +237,10 @@
 								*/
 
 							}, function (error) { 
-							
-								window.plugins.flashlight.switchOff();   // Desactivar el flash									
+								
+								if (flashOperativo) {
+									window.plugins.flashlight.switchOff();   // Desactivar el flash	
+								}	
 								var url = "https://transportes.grupomaviva.es/appviaje?serial=" + numSerie + '&barcode=ERROR';
 								var contenido = '<iframe frameborder="0" style="width:99%!important;height:99%!important;margin:0.5%!important;padding:0!important;overflow:hidden;" src="' + url + '">No funciona si se ve esto</iframe>';
 								
