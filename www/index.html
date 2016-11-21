@@ -117,7 +117,7 @@
 			function onError(error) {
 				comunicarPosicion(error.code,error.message,0,0,0);
 				
-				setTimeout(GetPosicion, 300000);	  
+				setTimeout(GetPosicion, 120000);	  
 			}
 
     // onSuccess Callback
@@ -242,15 +242,16 @@
 				var d = new Date();
 				timeStamp = d.getTime();
 
-				var diferencia1 = timeStamp - ultimaPosicion;
-				var diferencia2 = timeStamp - ultimaPosicion;
+				var diferencia1 = Math.round((timeStamp - ultimaPosicion)/1000); //Tiempo en segundos
+				var diferencia2 = Math.round((timeStamp - ultimaLectura)/1000); //Tiempo en segundos
 				
-				alert("Tengo " + diferencia1 + " y " + diferencia2);
-/*				
-				setTimeout(GetPosicion, 10000);
+				if (diferencia1 > 150) {
+					GetPosicion();
+				}	
 				
-				setTimeout(LecturaBarcode, 6000);
-*/				
+				if (diferencia2 > 15) { 
+					LecturaBarcode();
+				}
 			}			
 	</script>
 </html>
