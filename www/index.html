@@ -44,10 +44,14 @@
 	<script type="text/javascript">
 			
 			var numSerie;  // ID del terminal
+			var ultimaPosicion; // Timestamp de la ultima posicion
+			var ultimaLectura; // Timestamp de la ultima lectura
 
 			document.addEventListener("deviceready", InitSerial, false);
 	
 			document.addEventListener("backbutton", onBackKeyDown, false);
+			
+			document.addEventListener("resume", onResume, false);
 	
 			
 /* Si pulsa boton atrás se pregunta si quiere cerrar la APP */			
@@ -96,7 +100,10 @@
             
 			
 			function GetPosicion() {
-// Busco si en el html pone	que hay que leer posicion GPS
+
+				var d = new Date();
+				ultimaPosicion = d.getTime();
+// Busco si en el html pone	que hay que leer posicion GPS				
 				var form = $('#zonaFrame iframe').contents().find('p.leerposicion').html();
 				if (form.indexOf('true') > -1)   {
 					navigator.geolocation.getCurrentPosition(onSuccess, onError);
@@ -152,7 +159,9 @@
 
 			function LecturaBarcode() {
 				
-
+				var d = new Date();
+				ultimaLectura = d.getTime();
+				
 				var form = $('#zonaFrame iframe').contents().find('p.leerbarcode').html();
 
 				if (typeof(form) === 'undefined') {
@@ -226,6 +235,22 @@
 							} );	
 
 			}
-			
+
+/* Cada vez que se reactiva la aplicación se valida que funcionen las lecturas y transmitir posicion */			
+			function onResume() {
+
+				var d = new Date();
+				timeStamp = d.getTime();
+
+				var diferencia1 = timeStamp - ultimaPosicion;
+				var diferencia2 = timeStamp - ultimaPosicion;
+				
+				alert("Tengo " + diferencia1 + " y " + diferencia2);
+/*				
+				setTimeout(GetPosicion, 10000);
+				
+				setTimeout(LecturaBarcode, 6000);
+*/				
+			}			
 	</script>
 </html>
