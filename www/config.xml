@@ -4,7 +4,7 @@
 	<author href="http://www.grupomaviva.es" email="informatica@grupomaviva.com">App Control Hojas de Ruta</author>
 	<content src="index.html"/>
 
-  <!-- Target Platforms -->
+<!-- Target Platforms -->
     <platform name="android" />
 	
 	<allow-navigation href="*" />
