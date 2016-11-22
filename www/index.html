@@ -179,10 +179,7 @@
 /* ESCANEO BARCODE, activa el lector y  */			
 			function LeerBarcode() {
 				
-				var scanner = cordova.require("cordova/plugin/BarcodeScanner");
-//				alert("Scan: paso " + pasoSincrono + " y " + procesaCarro);
-				
-				scanner.scan( function (result) { 
+				cordova.plugins.barcodeScanner.scan( function (result) { 
 
 								if (result.cancelled) {
 //									alert("Lectura CANCELADA");
