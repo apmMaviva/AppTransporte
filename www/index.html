@@ -100,8 +100,8 @@
             
 			function arrancarPosicion() {
 				alert("Arranca posicion");
-				watchId = navigator.geolocation.watchPosition(onSuccess, onError, {maximumAge: 3000, timeout: 6000, enableHighAccuracy: true});
-				setTimeout(pararPosicion, 15000);
+				watchId = navigator.geolocation.watchPosition(onSuccess, onError, {maximumAge: 3000, timeout: 6000, enableHighAccuracy: false});
+				setTimeout(pararPosicion, 30000);
 			}
 			
 			function pararPosicion() {
