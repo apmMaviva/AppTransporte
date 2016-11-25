@@ -101,11 +101,11 @@
 			function arrancarPosicion() {
 				alert("Arranca posicion");
 				watchId = navigator.geolocation.watchPosition(onSuccess, onError, {maximumAge: 3000, timeout: 6000, enableHighAccuracy: true});
-				setTimeout(pararPosicion, 30000);
+				setTimeout(pararPosicion, 15000);
 			}
 			
 			function pararPosicion() {
-				alert("Para posicion");
+				alert("Para posicion " + watchId);
 				navigator.geolocation.clearWatch(watchID);
 				setTimeout(arrancarPosicion, 60000);
 			}
