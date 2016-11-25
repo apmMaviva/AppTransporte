@@ -30,6 +30,7 @@
         <script type="text/javascript" src="cordova.js"></script>
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/jquery.cookie.js"></script>
+		<script type="text/javascript" src="js/plugins/Flashlight.js"></script>
         <title>Maviva App Control de Transporte</title>
 		
     </head>
@@ -43,7 +44,7 @@
 	<script type="text/javascript">
 			
 			var numSerie;  // ID del terminal
-			var ultimaPosicion; // Timestamp de la ultima posicion
+			var watchId;
 			var ultimaLectura; // Timestamp de la ultima lectura
 
 			document.addEventListener("deviceready", InitSerial, false);
@@ -70,6 +71,7 @@
 				navigator.notification.confirm( "¿Deseas cerrar la aplicación?", 
 						function (button) {
 							if (button==2) {
+								navigator.geolocation.clearWatch(watchID);
 								navigator.app.exitApp();
 							}
 						},
@@ -83,7 +85,7 @@
 			function InitSerial() {
 
 				numSerie = device.uuid;	
-				ultimaPosicion = 0;
+				
 				estado = 'N';	
 				
 				var url = "https://transportes.grupomaviva.es/applogin?serial=" + numSerie;
@@ -91,30 +93,21 @@
 				
 				$('#zonaFrame').html(contenido);
 				
+				var watchId = navigator.geolocation.watchPosition(onSuccess, onError, {maximumAge: 3000, timeout: 6000, enableHighAccuracy: true});
+				
 				setTimeout(LecturaBarcode, 6000);
 				
 			}
             
 			
-			function GetPosicion() {
-
-				var d = new Date();
-				ultimaPosicion = d.getTime();
-// Busco si en el html pone	que hay que leer posicion GPS				
-				var form = $('#zonaFrame iframe').contents().find('p.leerposicion').html();
-				if (form.indexOf('true') > -1)   {
-					navigator.geolocation.getCurrentPosition(onSuccess, onError, {maximumAge: 3000, timeout: 6000, enableHighAccuracy: true});
-				}
-			}
-
-    // onError Callback receives a PositionError object
+// onError Callback receives a PositionError object
 			function onError(error) {
 				comunicarPosicion(error.code,error.message,0,0,0);
 			}
 
-    // onSuccess Callback
-    // This method accepts a Position object, which contains the current GPS coordinates
-			var onSuccess = function(position) {
+// onSuccess Callback
+// This method accepts a Position object, which contains the current GPS coordinates
+			function onSuccess(position) {
 /*				alert('Latitude: '          + position.coords.latitude          + '\n' +
 					  'Longitude: '         + position.coords.longitude         + '\n' +
 					  'Altitude: '          + position.coords.altitude          + '\n' +
@@ -149,19 +142,8 @@
 
 			function LecturaBarcode() {
 				
-				alert('LECTURA BARCODE');
-				
 				var d = new Date();
 				ultimaLectura = d.getTime();
-				timeStamp = d.getTime();				
-				
-				var diferencia = timeStamp - ultimaPosicion; //Tiempo en milisegundos
-				if (diferencia > 30000) { 
-					GetPosicion();
-				}
-				else {
-					alert('No toca ' + diferencia);
-				}
 				
 				var form = $('#zonaFrame iframe').contents().find('p.leerbarcode').html();
 
@@ -240,9 +222,9 @@
 				var d = new Date();
 				timeStamp = d.getTime();
 
-				var diferencia = Math.round((timeStamp - ultimaLectura)/1000); //Tiempo en segundos
+				var diferencia2 = Math.round((timeStamp - ultimaLectura)/1000); //Tiempo en segundos
 				
-				if (diferencia > 5) { 
+				if (diferencia2 > 15) { 
 					LecturaBarcode();
 				}
 			}			
