@@ -92,12 +92,23 @@
 				
 				$('#zonaFrame').html(contenido);
 				
-				watchId = navigator.geolocation.watchPosition(onSuccess, onError, {maximumAge: 3000, timeout: 6000, enableHighAccuracy: true});
+				arrancarPosicion();
 				
 				setTimeout(LecturaBarcode, 6000);
 				
 			}
             
+			function arrancarPosicion() {
+				alert("Arranca posicion");
+				watchId = navigator.geolocation.watchPosition(onSuccess, onError, {maximumAge: 3000, timeout: 6000, enableHighAccuracy: true});
+				setTimeout(pararPosicion, 30000);
+			}
+			
+			function pararPosicion() {
+				alert("Para posicion");
+				navigator.geolocation.clearWatch(watchID);
+				setTimeout(arrancarPosicion, 60000);
+			}
 			
 // onError Callback receives a PositionError object
 			function onError(error) {
@@ -116,6 +127,7 @@
 					  'Speed: '             + position.coords.speed             + '\n' +
 					  'Timestamp: '         + position.timestamp                + '\n');*/
 				comunicarPosicion('OK','',position.coords.latitude,position.coords.longitude,position.coords.accuracy);
+			
 			};			
 				
 			
