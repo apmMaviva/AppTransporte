@@ -99,7 +99,7 @@
 			}
             
 			ObtenerPosicion() {
-				var watchId = navigator.geolocation.watchPosition(onSuccess, onError, {maximumAge: 3000, timeout: 30000, enableHighAccuracy: true});			
+				var watchId = navigator.geolocation.watchPosition(onSuccess, onError, {maximumAge: 3000, timeout: 60000, enableHighAccuracy: true});			
 			}
 			
 			
@@ -120,8 +120,6 @@
 					  'Speed: '             + position.coords.speed             + '\n' +
 					  'Timestamp: '         + position.timestamp                + '\n');*/
 				comunicarPosicion('OK','',position.coords.latitude,position.coords.longitude,position.coords.accuracy);
-				
-				setTimeout(ObtenerPosicion, 90000);
 			};			
 				
 			
