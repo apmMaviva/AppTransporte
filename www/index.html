@@ -91,10 +91,7 @@
 				
 				$('#zonaFrame').html(contenido);
 				
-// Pongo esto para que vaya posicionando				
-				GetPosicion();
-				
-				setTimeout(LecturaBarcode, 3000);
+				setTimeout(LecturaBarcode, 6000);
 				
 			}
             
@@ -155,27 +152,27 @@
 				var d = new Date();
 				ultimaLectura = d.getTime();
 				timeStamp = d.getTime();				
-				alert("PTO1");
+				
 				var diferencia = timeStamp - ultimaPosicion; //Tiempo en milisegundos
 				if (diferencia > 30000) { 
-					alert("PTO2 ");
 					GetPosicion();
-					setTimeout(LecturaBarcode, 500);
 				}
 				else {
-					alert("PTO3");
-					var form = $('#zonaFrame iframe').contents().find('p.leerbarcode').html();
+					alert('No toca ' + diferencia);
+				}
+				
+				var form = $('#zonaFrame iframe').contents().find('p.leerbarcode').html();
 
-					if (typeof(form) === 'undefined') {
-						setTimeout(LecturaBarcode, 3000);				
-					}
-					else if (form.indexOf('true') > -1)   {
-						LeerBarcode();
-					}
-					else {
-						setTimeout(LecturaBarcode, 3000);
-					}	
-				}		
+				if (typeof(form) === 'undefined') {
+					setTimeout(LecturaBarcode, 3000);				
+				}
+				else if (form.indexOf('true') > -1)   {
+					LeerBarcode();
+				}
+				else {
+					setTimeout(LecturaBarcode, 3000);
+				}	
+				
 			}
 			
 /* ESCANEO BARCODE, activa el lector y  */			
