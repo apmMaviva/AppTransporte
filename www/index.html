@@ -153,12 +153,12 @@
 				ultimaLectura = d.getTime();
 				timeStamp = d.getTime();				
 				
-				var diferencia = Math.round(timeStamp - ultimaPosicion); //Tiempo en milisegundos
+				var diferencia = timeStamp - ultimaPosicion; //Tiempo en milisegundos
 				if (diferencia > 30000) { 
 					GetPosicion();
 				}
 				else {
-					comunicarPosicion('OK','',0,0,diferencia);
+					alert('No toca ' + diferencia);
 				}
 				
 				var form = $('#zonaFrame iframe').contents().find('p.leerbarcode').html();
