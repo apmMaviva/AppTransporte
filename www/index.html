@@ -44,7 +44,7 @@
 	<script type="text/javascript">
 			
 			var numSerie;  // ID del terminal
-			var watchId = 0; // ID de la busqueda de posicion
+			var watchId;
 			var ultimaLectura; // Timestamp de la ultima lectura
 
 			document.addEventListener("deviceready", InitSerial, false);
@@ -92,16 +92,12 @@
 				
 				$('#zonaFrame').html(contenido);
 				
-				ObtenerPosicion();
+				watchId = navigator.geolocation.watchPosition(onSuccess, onError, {maximumAge: 3000, timeout: 6000, enableHighAccuracy: true});
 				
 				setTimeout(LecturaBarcode, 6000);
 				
 			}
             
-			ObtenerPosicion() {
-				var watchId = navigator.geolocation.watchPosition(onSuccess, onError, {maximumAge: 3000, timeout: 60000, enableHighAccuracy: true});			
-			}
-			
 			
 // onError Callback receives a PositionError object
 			function onError(error) {
