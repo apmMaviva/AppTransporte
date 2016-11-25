@@ -91,8 +91,6 @@
 				
 				$('#zonaFrame').html(contenido);
 				
-				setTimeout(GetPosicion, 10000);
-				
 				setTimeout(LecturaBarcode, 6000);
 				
 			}
@@ -109,16 +107,11 @@
 				if (form.indexOf('true') > -1)   {
 					navigator.geolocation.getCurrentPosition(onSuccess, onError, {maximumAge: 3000, timeout: 6000, enableHighAccuracy: true});
 				}
-				else {
-					setTimeout(GetPosicion, 60000);	
-				}
 			}
 
     // onError Callback receives a PositionError object
 			function onError(error) {
 				comunicarPosicion(error.code,error.message,0,0,0);
-				
-				setTimeout(GetPosicion, 120000);	  
 			}
 
     // onSuccess Callback
@@ -133,8 +126,6 @@
 					  'Speed: '             + position.coords.speed             + '\n' +
 					  'Timestamp: '         + position.timestamp                + '\n');*/
 				comunicarPosicion('OK','',position.coords.latitude,position.coords.longitude,position.coords.accuracy);
-				
-				setTimeout(GetPosicion, 60000);	  
 			};			
 				
 			
@@ -162,6 +153,11 @@
 				
 				var d = new Date();
 				ultimaLectura = d.getTime();
+				
+				var diferencia = Math.round(timeStamp - ultimaPosicion); //Tiempo en milisegundos
+				if (diferencia > 30000) { 
+					GetPosicion();
+				}
 				
 				var form = $('#zonaFrame iframe').contents().find('p.leerbarcode').html();
 
@@ -240,16 +236,9 @@
 				var d = new Date();
 				timeStamp = d.getTime();
 
-				var diferencia1 = Math.round((timeStamp - ultimaPosicion)/1000); //Tiempo en segundos
-				var diferencia2 = Math.round((timeStamp - ultimaLectura)/1000); //Tiempo en segundos
+				var diferencia = Math.round((timeStamp - ultimaLectura)/1000); //Tiempo en segundos
 				
-				if (diferencia1 > 150) {
-					alert('Relanzo getposicion');
-					GetPosicion();
-				}	
-				
-				if (diferencia2 > 15) { 
-					alert('Relanzo LecturaBarcode');
+				if (diferencia > 5) { 
 					LecturaBarcode();
 				}
 			}			
