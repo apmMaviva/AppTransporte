@@ -98,8 +98,6 @@
 			
 			function GetPosicion() {
 
-				comunicarPosicion('OK','',0,0,99);
-			
 				var d = new Date();
 				ultimaPosicion = d.getTime();
 // Busco si en el html pone	que hay que leer posicion GPS				
@@ -153,6 +151,7 @@
 				
 				var d = new Date();
 				ultimaLectura = d.getTime();
+				timeStamp = d.getTime();				
 				
 				var diferencia = Math.round(timeStamp - ultimaPosicion); //Tiempo en milisegundos
 				if (diferencia > 30000) { 
