@@ -30,7 +30,6 @@
         <script type="text/javascript" src="cordova.js"></script>
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/jquery.cookie.js"></script>
-		<script type="text/javascript" src="js/plugins/Flashlight.js"></script>
         <title>Maviva App Control de Transporte</title>
 		
     </head>
@@ -106,7 +105,7 @@
 // Busco si en el html pone	que hay que leer posicion GPS				
 				var form = $('#zonaFrame iframe').contents().find('p.leerposicion').html();
 				if (form.indexOf('true') > -1)   {
-					navigator.geolocation.getCurrentPosition(onSuccess, onError);
+					navigator.geolocation.getCurrentPosition(onSuccess, onError, {maximumAge: 3000, timeout: 6000, enableHighAccuracy: true});
 				}
 				else {
 					setTimeout(GetPosicion, 60000);	
@@ -243,10 +242,12 @@
 				var diferencia2 = Math.round((timeStamp - ultimaLectura)/1000); //Tiempo en segundos
 				
 				if (diferencia1 > 150) {
+					alert('Relanzo getposicion');
 					GetPosicion();
 				}	
 				
 				if (diferencia2 > 15) { 
+					alert('Relanzo LecturaBarcode');
 					LecturaBarcode();
 				}
 			}			
