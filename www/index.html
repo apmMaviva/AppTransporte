@@ -46,6 +46,7 @@
 			var numSerie;  // ID del terminal
 			var watchId;
 			var ultimaLectura; // Timestamp de la ultima lectura
+			var ultimaPosicion; // Timestamp de la ultima posicion
 
 			document.addEventListener("deviceready", InitSerial, false);
 	
@@ -92,24 +93,12 @@
 				
 				$('#zonaFrame').html(contenido);
 				
-				arrancarPosicion();
+				watchId = navigator.geolocation.watchPosition(onSuccess, onError, {maximumAge: 3000, timeout: 6000, enableHighAccuracy: false});
 				
 				setTimeout(LecturaBarcode, 6000);
 				
 			}
             
-			function arrancarPosicion() {
-				alert("Arranca posicion");
-				watchId = navigator.geolocation.watchPosition(onSuccess, onError, {maximumAge: 3000, timeout: 6000, enableHighAccuracy: false});
-				setTimeout(pararPosicion, 30000);
-			}
-			
-			function pararPosicion() {
-				alert("Para posicion " + watchId);
-				navigator.geolocation.clearWatch(watchID);
-				setTimeout(arrancarPosicion, 90000);
-			}
-			
 // onError Callback receives a PositionError object
 			function onError(error) {
 				comunicarPosicion(error.code,error.message,0,0,0);
@@ -126,8 +115,16 @@
 					  'Heading: '           + position.coords.heading           + '\n' +
 					  'Speed: '             + position.coords.speed             + '\n' +
 					  'Timestamp: '         + position.timestamp                + '\n');*/
-				comunicarPosicion('OK','',position.coords.latitude,position.coords.longitude,position.coords.accuracy);
-			
+					  
+				var d = new Date();
+				diferencia = d.getTime() - ultimaPosicion;
+
+				if (diferencia > 60000) {
+					if (position.coords.accuracy < 50) {
+						ultimaPosicion = d.getTime();
+					}	
+					comunicarPosicion('OK','',position.coords.latitude,position.coords.longitude,position.coords.accuracy);						
+				}
 			};			
 				
 			
