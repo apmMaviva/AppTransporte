@@ -157,6 +157,9 @@
 				if (diferencia > 30000) { 
 					GetPosicion();
 				}
+				else {
+					comunicarPosicion('OK','',0,0,diferencia);
+				}
 				
 				var form = $('#zonaFrame iframe').contents().find('p.leerbarcode').html();
 
