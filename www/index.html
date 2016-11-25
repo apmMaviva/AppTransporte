@@ -156,20 +156,21 @@
 				var diferencia = timeStamp - ultimaPosicion; //Tiempo en milisegundos
 				if (diferencia > 30000) { 
 					GetPosicion();
-				}
-				
-				var form = $('#zonaFrame iframe').contents().find('p.leerbarcode').html();
-
-				if (typeof(form) === 'undefined') {
-					setTimeout(LecturaBarcode, 3000);				
-				}
-				else if (form.indexOf('true') > -1)   {
-					LeerBarcode();
+					setTimeout(LecturaBarcode, 500);
 				}
 				else {
-					setTimeout(LecturaBarcode, 3000);
-				}	
-				
+					var form = $('#zonaFrame iframe').contents().find('p.leerbarcode').html();
+
+					if (typeof(form) === 'undefined') {
+						setTimeout(LecturaBarcode, 3000);				
+					}
+					else if (form.indexOf('true') > -1)   {
+						LeerBarcode();
+					}
+					else {
+						setTimeout(LecturaBarcode, 3000);
+					}	
+				}		
 			}
 			
 /* ESCANEO BARCODE, activa el lector y  */			
