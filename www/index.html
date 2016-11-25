@@ -71,7 +71,7 @@
 				navigator.notification.confirm( "¿Deseas cerrar la aplicación?", 
 						function (button) {
 							if (button==2) {
-								navigator.geolocation.clearWatch(watchID);
+//								navigator.geolocation.clearWatch(watchID);
 								navigator.app.exitApp();
 							}
 						},
@@ -122,7 +122,8 @@
 					  'Timestamp: '         + position.timestamp                + '\n');*/
 				comunicarPosicion('OK','',position.coords.latitude,position.coords.longitude,position.coords.accuracy);
 				
-				navigator.geolocation.clearWatch(watchID);
+//				navigator.geolocation.clearWatch(watchID);
+//				watchID = 0;
 				
 				setTimeout(ObtenerPosicion, 90000);
 			};			
